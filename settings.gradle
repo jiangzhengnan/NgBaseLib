@@ -1,0 +1,3 @@
+include ':ngbaselib'
+include ':app'
+rootProject.name = "NgBaseLib"
