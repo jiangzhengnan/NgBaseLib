@@ -33,6 +33,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initViewsAndEvents() {
+
         initView()
         //start
         itemInfoList.add(ItemInfo("Demo", AiFragment()))
