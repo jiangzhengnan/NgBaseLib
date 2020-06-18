@@ -1,0 +1,144 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <declare-styleable name="LineMorphingDrawable">
+        <attr name="lmd_state" format="reference" />
+        <attr name="lmd_curState" format="integer" />
+        <attr name="lmd_width" format="reference|dimension" />
+        <attr name="lmd_height" format="reference|dimension" />
+        <attr name="lmd_padding" format="reference|dimension" />
+        <attr name="lmd_paddingLeft" format="reference|dimension" />
+        <attr name="lmd_paddingTop" format="reference|dimension" />
+        <attr name="lmd_paddingRight" format="reference|dimension" />
+        <attr name="lmd_paddingBottom" format="reference|dimension" />
+        <attr name="lmd_animDuration" format="reference|integer" />
+        <attr name="lmd_interpolator" format="reference" />
+        <attr name="lmd_strokeSize" format="reference|dimension" />
+        <attr name="lmd_strokeColor" format="reference|color" />
+        <attr name="lmd_strokeCap" format="integer">
+            <enum name="butt" value="0x00000000" />
+            <enum name="round" value="0x00000001" />
+            <enum name="square" value="0x00000002" />
+        </attr>
+        <attr name="lmd_strokeJoin" format="integer">
+            <enum name="miter" value="0x00000000" />
+            <enum name="round" value="0x00000001" />
+            <enum name="bevel" value="0x00000002" />
+        </attr>
+        <attr name="lmd_clockwise" format="boolean" />
+        <attr name="lmd_layoutDirection" format="integer">
+            <enum name="ltr" value="0x00000000" />
+            <enum name="rtl" value="0x00000001" />
+            <enum name="locale" value="0x00000003" />
+        </attr>
+    </declare-styleable>
+
+
+    <declare-styleable name="PieAnimStyle">
+        <!--内间距-->
+        <attr name="pie_padding" format="reference|dimension" />
+        <attr name="pie_paddingLeft" format="reference|dimension" />
+        <attr name="pie_paddingTop" format="reference|dimension" />
+        <attr name="pie_paddingRight" format="reference|dimension" />
+        <attr name="pie_paddingBottom" format="reference|dimension" />
+        <!--切换动画时间-->
+        <attr name="pie_animDuration" format="reference|integer" />
+        <!--
+        -->
+        <attr name="pie_interpolator" format="reference" />
+        <!--画笔粗-->
+        <attr name="pie_strokeSize" format="reference|dimension" />
+        <!--画笔颜色-->
+        <attr name="pie_strokeColor" format="reference|color" />
+        <!--画笔末端样式-->
+        <attr name="pie_strokeCap" format="string">
+            <enum name="butt" value="0" />
+            <enum name="round" value="1" />
+            <enum name="square" value="2" />
+        </attr>
+        <!--画笔连接点样式-->
+        <attr name="pie_strokeJoin" format="string">
+            <enum name="miter" value="0" />
+            <enum name="round" value="1" />
+            <enum name="bevel" value="2" />
+        </attr>
+        <!--切换时旋转开关 -->
+        <attr name="pie_rotateSwitch" format="boolean" />
+        <!--切换时旋转方向 -->
+        <attr name="pie_rotateDirection" format="boolean" />
+        <!--切换时透明度开关 -->
+        <attr name="pie_alphaSwitch" format="boolean" />
+        <!--切换时透明度最低值 -->
+        <attr name="pie_alphaNum" format="integer" />
+    </declare-styleable>
+
+
+    <style name="CommonDialogStyle">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/white</item>
+    </style>
+
+
+
+    <style name="DialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/abc_slide_in_bottom</item>
+        <item name="android:windowExitAnimation">@anim/abc_slide_out_bottom</item>
+    </style>
+
+    <declare-styleable name="WheelPicker">
+        <attr name="wheel_data" format="reference" />
+        <attr name="wheel_selected_item_position" format="integer" />
+        <attr name="wheel_item_text_size" format="dimension" />
+        <attr name="wheel_item_text_max_size" format="dimension" />
+        <attr name="wheel_item_text_color" format="color" />
+        <attr name="wheel_selected_item_text_color" format="color" />
+        <attr name="wheel_same_width" format="boolean" />
+        <attr name="wheel_maximum_width_text" format="string" />
+        <attr name="wheel_maximum_width_text_position" format="integer" />
+        <attr name="wheel_visible_item_count" format="integer" />
+        <attr name="wheel_item_space" format="dimension" />
+        <attr name="wheel_cyclic" format="boolean" />
+        <attr name="wheel_indicator" format="boolean" />
+        <attr name="wheel_indicator_color" format="color" />
+        <attr name="wheel_indicator_size" format="dimension" />
+        <attr name="wheel_curtain" format="boolean" />
+        <attr name="wheel_curtain_color" format="color" />
+        <attr name="wheel_atmospheric" format="boolean" />
+        <attr name="wheel_curved" format="boolean" />
+        <attr name="wheel_item_align" format="enum">
+            <enum name="center" value="0" />
+            <enum name="left" value="1" />
+            <enum name="right" value="2" />
+        </attr>
+        <attr name="wheel_font_path" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="FloatingActionButton">
+        <attr name="fab_backgroundColor" format="reference|color" />
+        <attr name="fab_backgroundAnimDuration" format="reference|integer" />
+        <attr name="fab_radius" format="reference|dimension" />
+        <attr name="fab_elevation" format="reference|dimension" />
+        <attr name="fab_iconSrc" format="reference" />
+        <attr name="fab_iconLineMorphing" format="reference" />
+        <attr name="fab_iconSize" format="reference|dimension" />
+        <attr name="fab_interpolator" format="reference" />
+        <attr name="fab_animDuration" format="reference|integer" />
+    </declare-styleable>
+
+
+
+    <style name="AppBar" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="selectableItemBackground">@null</item>
+    </style>
+
+</resources>
