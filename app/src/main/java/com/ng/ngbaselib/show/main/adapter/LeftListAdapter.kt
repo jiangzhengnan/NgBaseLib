@@ -1,4 +1,4 @@
-package com.ng.ngbaselib
+package com.ng.ngbaselib.show.main.adapter
 
 /**
  * 描述:
@@ -11,6 +11,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.ng.ngbaselib.R
+import com.ng.ngbaselib.show.main.bean.ItemInfo
 
 /**
  * @作者： ljp

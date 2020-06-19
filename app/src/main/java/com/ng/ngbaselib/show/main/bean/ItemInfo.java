@@ -1,4 +1,4 @@
-package com.ng.ngbaselib;
+package com.ng.ngbaselib.show.main.bean;
 
 /**
  * 描述:

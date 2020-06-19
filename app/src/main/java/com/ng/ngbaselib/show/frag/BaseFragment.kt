@@ -1,4 +1,4 @@
-package com.ng.ngbaselib.frag
+package com.ng.ngbaselib.show.frag
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,9 +14,12 @@ import androidx.fragment.app.Fragment
 abstract class BaseFragment :Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val v = inflater.inflate(getLayoutId(), container, false)
-        initViewsAndEvents(v)
-        return v
+        return inflater.inflate(getLayoutId(), container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initViewsAndEvents(view)
     }
 
     abstract fun initViewsAndEvents(v: View)

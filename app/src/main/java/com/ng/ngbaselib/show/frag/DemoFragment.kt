@@ -1,4 +1,4 @@
-package com.ng.ngbaselib.frag
+package com.ng.ngbaselib.show.frag
 
 import android.view.View
 import com.ng.ngbaselib.R
@@ -8,7 +8,7 @@ import com.ng.ngbaselib.R
  * @author Jzn
  * @date 2020-06-12
  */
-class AiFragment : BaseFragment() {
+class DemoFragment : BaseFragment() {
 
     override fun initViewsAndEvents(v: View) {
     }
