@@ -3,12 +3,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_1_permission"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="动态申请权限" />
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_1_permission"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="动态申请多个权限" />
 
 
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_2_permission"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dd20"
+            android:text="动态申请单个权限" />
+    </LinearLayout>
 </RelativeLayout>

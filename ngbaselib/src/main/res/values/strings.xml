@@ -4,4 +4,9 @@
     <string name="dialog_ok">OK</string>
     <string name="dialog_cancel">Cancel</string>
 
+
+    <string name="try_again">重试</string>
+    <string name="data_empty">暂无数据</string>
+    <string name="loading_fail">抱歉，数据加载异常，请重新加载</string>
+
 </resources>

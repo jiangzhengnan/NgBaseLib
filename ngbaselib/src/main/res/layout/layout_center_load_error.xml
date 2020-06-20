@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/load_state_icon"
+        android:layout_width="@dimen/dd24"
+        android:layout_height="@dimen/dd24"
+        android:padding="5dp"
+        android:src="@drawable/ic_warn" />
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:gravity="center"
+        android:id="@+id/load_state_tv"
+        android:minWidth="200dp"
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="@dimen/dd35"
+        android:text="@string/loading_fail"
+        android:textSize="@dimen/td04" />
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/state_retry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dd17"
+        android:gravity="center"
+        android:minHeight="@dimen/dd36"
+        android:minWidth="200dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:text="@string/try_again"
+        android:textSize="@dimen/td04" />
+
+</LinearLayout>

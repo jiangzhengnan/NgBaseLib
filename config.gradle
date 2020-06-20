@@ -1,0 +1,29 @@
+ext {
+
+    android = [
+            compileSdkVersion: 29,
+            buildToolsVersion: "29.0.3",
+            minSdkVersion    : 26,
+            targetSdkVersion : 29,
+            versionCode      : 1,
+            versionName      : "1.0",
+
+    ]
+
+    lifecycle_version = '2.2.0-rc02'
+    glide_version = '4.9.0'
+
+
+    appId = [
+            "app": "com.ng.ngbaselib",
+    ]
+
+    dependencies = [
+
+    ]
+
+    processor = [
+            "lifecycle"     : "androidx.lifecycle:lifecycle-compiler:$lifecycle_version",
+            "glide_compiler": "com.github.bumptech.glide:compiler:$glide_version",
+    ]
+}

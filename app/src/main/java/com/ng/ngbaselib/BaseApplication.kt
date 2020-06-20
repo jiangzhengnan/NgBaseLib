@@ -4,7 +4,7 @@ import android.app.Application
 
 /**
  * 功能模块:
- * 权限判断
+ * 权限判断👌
  * 网络访问
  * recyclerview多布局
  * 底部tab按钮
@@ -16,12 +16,13 @@ import android.app.Application
  * 文件下载
  *
  * 组件模块:
- * baseactivity
- * 数据绑定，普通，listadapter
+ * BaseActivity
+ * BaseFragment
+ * 数据绑定，普通，listAdapter
  * 网络请求
  * 消息通信
  * 文件下载
- * 数据存储，sp，room
+ * 数据存储sp👌room
  * @author Jzn
  * @date 2020/6/19
  */

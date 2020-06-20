@@ -14,6 +14,7 @@ import com.ng.ngbaselib.show.main.adapter.LeftListAdapter
 import com.ng.ngbaselib.show.main.adapter.MainViewPagerAdapter
 import com.ng.ngbaselib.R
 import com.ng.ngbaselib.show.frag.DemoFragment
+import com.ng.ngbaselib.show.frag.HttpFragment
 import com.ng.ngbaselib.show.frag.PermissionFrag
 import com.ng.ngbaselib.utils.AppUtils
 import kotlinx.android.synthetic.main.activity_main_vp.*
@@ -53,7 +54,7 @@ class MainActivity : AppCompatActivity() {
         initView()
         //start
         itemInfoList.add(ItemInfo(mFragName[0], PermissionFrag()))
-        itemInfoList.add(ItemInfo(mFragName[1], DemoFragment()))
+        itemInfoList.add(ItemInfo(mFragName[1], HttpFragment()))
         itemInfoList.add(ItemInfo(mFragName[2], DemoFragment()))
         itemInfoList.add(ItemInfo(mFragName[3], DemoFragment()))
         itemInfoList.add(ItemInfo(mFragName[4], DemoFragment()))

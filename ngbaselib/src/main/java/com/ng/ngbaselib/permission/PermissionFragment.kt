@@ -5,6 +5,9 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 
+/**
+ *
+ */
 internal class PermissionFragment : Fragment() {
     lateinit var liveData: MutableLiveData<PermissionResult>
 

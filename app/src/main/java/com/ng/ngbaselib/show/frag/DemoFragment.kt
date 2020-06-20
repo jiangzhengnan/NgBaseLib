@@ -1,6 +1,7 @@
 package com.ng.ngbaselib.show.frag
 
 import android.view.View
+import com.ng.ngbaselib.BaseFragment
 import com.ng.ngbaselib.R
 
 /**
@@ -10,8 +11,11 @@ import com.ng.ngbaselib.R
  */
 class DemoFragment : BaseFragment() {
 
-    override fun initViewsAndEvents(v: View) {
+    override fun initViewsAndEvents(v: View?) {
     }
 
     override fun getLayoutId(): Int = R.layout.fragment_demo
+
+    override fun onRetryBtnClick() {
+    }
 }
