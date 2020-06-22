@@ -2,7 +2,9 @@ package com.ng.ngbaselib.show.frag
 
 import android.Manifest
 import android.content.DialogInterface
+import android.os.Bundle
 import android.view.View
+import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.Observer
 import com.ng.ngbaselib.BaseFragment
 import com.ng.ngbaselib.R
@@ -17,7 +19,7 @@ import kotlinx.android.synthetic.main.fragment_permission.*
  * @author Jzn
  * @date 2020/6/19
  */
-class PermissionFrag : BaseFragment() {
+class PermissionFrag : BaseFragment<HomeViewModel, ViewDataBinding>() {
 
     //需要申请的权限列表
     private val mPermissions = arrayOf(
@@ -28,14 +30,6 @@ class PermissionFrag : BaseFragment() {
 
     private val mPermissionStr = Manifest.permission.CAMERA
 
-    override fun initViewsAndEvents(v: View?) {
-        btn_1_permission.setOnClickListener {
-            getPermissions(mPermissions)
-        }
-        btn_2_permission.setOnClickListener {
-            getPermission()
-        }
-    }
 
     private fun getPermission() {
         Permissions(this).request(mPermissionStr).observe(
@@ -114,6 +108,17 @@ class PermissionFrag : BaseFragment() {
 
     override fun getLayoutId(): Int = R.layout.fragment_permission
     override fun onRetryBtnClick() {
-        TODO("Not yet implemented")
+    }
+
+    override fun initViewsAndEvents(v: View?, savedInstanceState: Bundle?) {
+        btn_1_permission.setOnClickListener {
+            getPermissions(mPermissions)
+        }
+        btn_2_permission.setOnClickListener {
+            getPermission()
+        }
+    }
+
+    override fun lazyLoadData() {
     }
 }

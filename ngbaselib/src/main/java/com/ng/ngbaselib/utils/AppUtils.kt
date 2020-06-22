@@ -1,5 +1,6 @@
 package com.ng.ngbaselib.utils
 
+import android.app.Application
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
@@ -12,6 +13,7 @@ import android.graphics.drawable.BitmapDrawable
  * @date 2020/6/19
  */
 object AppUtils {
+
 
     /**
      * 获取应用程序名称

@@ -1,6 +1,8 @@
 package com.ng.ngbaselib.show.frag
 
+import android.os.Bundle
 import android.view.View
+import androidx.databinding.ViewDataBinding
 import com.ng.ngbaselib.BaseFragment
 import com.ng.ngbaselib.R
 import kotlinx.android.synthetic.main.fragment_http.*
@@ -10,7 +12,7 @@ import kotlinx.android.synthetic.main.fragment_http.*
  * @author Jzn
  * @date 2020/6/20
  */
-class HttpFragment: BaseFragment() {
+class HttpFragment: BaseFragment<HomeViewModel, ViewDataBinding>() {
     //得到随机小猫猫图片，get请求
     private val HTTP_CAT = "https://api.thecatapi.com/v1/images/search"
 
@@ -20,14 +22,17 @@ class HttpFragment: BaseFragment() {
 
     }
 
-    override fun initViewsAndEvents(v: View?) {
+
+    override fun getLayoutId(): Int = R.layout.fragment_http
+    override fun onRetryBtnClick() {
+    }
+
+    override fun initViewsAndEvents(v: View?, savedInstanceState: Bundle?) {
         btn_1_http.setOnClickListener {
             getCat()
         }
     }
 
-    override fun getLayoutId(): Int = R.layout.fragment_http
-    override fun onRetryBtnClick() {
-        TODO("Not yet implemented")
+    override fun lazyLoadData() {
     }
 }

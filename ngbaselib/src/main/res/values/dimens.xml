@@ -218,4 +218,7 @@
     <dimen name="dd57">57dp</dimen>
     <dimen name="dd58">57dp</dimen>
 
+
+    <dimen name="dialog_width">120dp</dimen>
+
 </resources>
