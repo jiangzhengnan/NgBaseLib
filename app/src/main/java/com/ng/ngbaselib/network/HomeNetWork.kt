@@ -1,6 +1,4 @@
-package com.ng.ngbaselib.show.frag
-
-import com.ng.ngbaselib.network.HomeService
+package com.ng.ngbaselib.network
 
 
 /**
@@ -13,7 +11,7 @@ class HomeNetWork {
 
 //    suspend fun getBannerData() = mService.getBanner()
 //
-//    suspend fun getHomeList(page: Int) = mService.getHomeList(page)
+    suspend fun getHomeList(page: Int) = mService.getHomeList(page)
 //
 //    suspend fun getNaviJson() = mService.naviJson()
 //
@@ -26,8 +24,10 @@ class HomeNetWork {
         @Volatile
         private var netWork: HomeNetWork? = null
 
-        fun getInstance() = netWork ?: synchronized(this) {
-            netWork ?: HomeNetWork().also { netWork = it }
+        fun getInstance() = netWork
+                ?: synchronized(this) {
+            netWork
+                    ?: HomeNetWork().also { netWork = it }
         }
     }
 

@@ -1,5 +1,9 @@
 package com.ng.ngbaselib.data
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+
 
 /**
  * @author :Aleyn
@@ -15,18 +19,18 @@ package com.ng.ngbaselib.data
  * size : 20
  * total : 1049
  */
-//@Entity(tableName = "home_data")
-//@TypeConverters(ArticlesTypeConverters::class)
-//data class HomeListBean(
-//    @PrimaryKey
-//    val curPage: Int,
-//    val offset: Int,
-//    val over: Boolean,
-//    val pageCount: Int,
-//    val size: Int,
-//    val total: Int,
-//    val datas: List<ArticlesBean>
-//)
+@Entity(tableName = "home_data")
+@TypeConverters(ArticlesTypeConverters::class)
+data class HomeListBean(
+    @PrimaryKey
+    val curPage: Int,
+    val offset: Int,
+    val over: Boolean,
+    val pageCount: Int,
+    val size: Int,
+    val total: Int,
+    val datas: List<ArticlesBean>
+)
 
 
 data class NavTypeBean(

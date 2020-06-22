@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 def rootAndroidId = rootProject.ext.android
 def appId = rootProject.ext.appId
@@ -34,9 +35,20 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation project(':ngbaselib')
 
-    //得到定义的所有库
-    support.each { k, v -> implementation v }
+    api 'androidx.core:core-ktx:1.1.0'
+    //Room
+    api 'androidx.room:room-runtime:2.2.5'
+    api 'androidx.room:room-compiler:2.2.5'
+    api 'androidx.room:room-ktx:2.2.5'
+    //implementation "androidx.room:room-ktx:2.2.5"
 
+    testApi 'androidx.room:room-testing:2.2.5'
+
+    //utils
+    api 'com.blankj:utilcodex:1.26.0'
+
+    //得到定义的所有库
+//    support.each { k, v -> implementation v }
 
 
 

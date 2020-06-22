@@ -11,6 +11,7 @@ import com.ng.ngbaselib.R
 import com.ng.ngbaselib.permission.PermissionResult
 import com.ng.ngbaselib.permission.PermissionUtil
 import com.ng.ngbaselib.permission.Permissions
+import com.ng.ngbaselib.show.viewmodel.HomeViewModel
 import com.ng.ngbaselib.utils.MLog
 import kotlinx.android.synthetic.main.fragment_permission.*
 

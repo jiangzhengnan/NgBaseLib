@@ -1,5 +1,10 @@
 package com.ng.ngbaselib.network
 
+import com.ng.ngbaselib.data.HomeListBean
+import com.ng.ngbaselib.network.base.BaseResult
+import retrofit2.http.GET
+import retrofit2.http.Path
+
 /**
  *   @auther : Aleyn
  *   time   : 2019/10/29
@@ -20,12 +25,12 @@ interface HomeService {
 //    suspend fun naviJson(): BaseResult<List<NavTypeBean>>
 //
 //
-//    /**
-//     * 项目列表
-//     * @param page 页码，从0开始
-//     */
-//    @GET("article/listproject/{page}/json")
-//    suspend fun getHomeList(@Path("page") page: Int): BaseResult<HomeListBean>
+    /**
+     * 项目列表
+     * @param page 页码，从0开始
+     */
+    @GET("article/listproject/{page}/json")
+    suspend fun getHomeList(@Path("page") page: Int): BaseResult<HomeListBean>
 //
 //
 //    /**

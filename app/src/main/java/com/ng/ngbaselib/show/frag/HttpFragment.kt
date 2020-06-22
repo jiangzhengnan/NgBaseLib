@@ -5,6 +5,7 @@ import android.view.View
 import androidx.databinding.ViewDataBinding
 import com.ng.ngbaselib.BaseFragment
 import com.ng.ngbaselib.R
+import com.ng.ngbaselib.show.viewmodel.HomeViewModel
 import kotlinx.android.synthetic.main.fragment_http.*
 
 /**

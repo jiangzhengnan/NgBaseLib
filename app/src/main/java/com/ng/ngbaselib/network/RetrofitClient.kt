@@ -1,8 +1,7 @@
-package com.ng.ngbaselib.show.frag
+package com.ng.ngbaselib.network
 
 import com.ng.ngbaselib.BuildConfig
 import com.ng.ngbaselib.common.Constant.BASE_URL
-import com.ng.ngbaselib.network.LoggingInterceptor
 import com.ng.ngbaselib.network.intercepter.Level
 import okhttp3.ConnectionPool
 import okhttp3.OkHttpClient

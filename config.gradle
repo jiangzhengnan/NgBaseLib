@@ -12,14 +12,15 @@ ext {
 
     lifecycle_version = '2.2.0-rc02'
     glide_version = '4.9.0'
+    room_version = '2.2.4'
 
 
     appId = [
             "app": "com.ng.ngbaselib",
     ]
 
-    dependencies = [
 
+    dependencies = [
     ]
 
     processor = [

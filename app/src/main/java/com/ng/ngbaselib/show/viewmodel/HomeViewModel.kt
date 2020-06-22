@@ -1,4 +1,4 @@
-package com.ng.ngbaselib.show.frag
+package com.ng.ngbaselib.show.viewmodel
 
 import com.ng.ngbaselib.BaseApplication
 import com.ng.ngbaselib.BaseViewModel
@@ -12,7 +12,7 @@ class HomeViewModel : BaseViewModel(BaseApplication.instance) {
 
 //    private val projectData = MutableLiveData<HomeListBean>()
 
-//    /**
+
 //     * @param page 页码
 //     * @param refresh 是否刷新
 //     */
