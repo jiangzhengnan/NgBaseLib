@@ -21,7 +21,7 @@ abstract class BaseModel {
         if (isUseCache(localData)) return localData!!
         else {
             val net = remoto()
-            if (net.isSuccess()) {
+            if (net.suc()) {
                 return net.data()!!.also { save(it) }
             }
             throw ResponseThrowable(net)

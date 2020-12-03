@@ -36,7 +36,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/left_rv"
-        android:padding="@dimen/dd16"
+        android:padding="16dp"
         android:layout_width="250dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"

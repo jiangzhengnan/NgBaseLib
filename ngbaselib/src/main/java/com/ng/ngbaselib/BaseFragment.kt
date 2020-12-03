@@ -1,6 +1,8 @@
 package com.ng.ngbaselib
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -8,6 +10,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.TextView
+import android.widget.Toast
 import androidx.core.graphics.ColorUtils
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
@@ -18,10 +22,14 @@ import androidx.lifecycle.ViewModelProvider
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
+import com.alibaba.android.arouter.launcher.ARouter
 import com.ng.ngbaselib.event.Message
+import com.ng.ngbaselib.fragment.FragmentUserVisibleController
 import com.ng.ngbaselib.utils.ColorUtil
 import com.ng.ngbaselib.utils.ToastUtils
 import com.ng.ngbaselib.view.StateLayout
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import java.lang.reflect.ParameterizedType
 
 /**
@@ -36,7 +44,9 @@ import java.lang.reflect.ParameterizedType
  * @author Jzn
  * @date 2020-06-12
  */
-abstract class BaseFragment<VM : BaseViewModel, DB : ViewDataBinding> : Fragment() {
+abstract class BaseFragment<VM : BaseViewModel, DB : ViewDataBinding> : Fragment(),
+    FragmentUserVisibleController.UserVisibleCallback {
+    var mTitle: String? = null
 
     //是否需要Loading布局
     private fun isNeedLoad(): Boolean {
@@ -45,6 +55,7 @@ abstract class BaseFragment<VM : BaseViewModel, DB : ViewDataBinding> : Fragment
 
     protected lateinit var viewModel: VM
     protected var mBinding: DB? = null
+
     //是否第一次加载
     private var isFirst: Boolean = true
     private var dialog: MaterialDialog? = null
@@ -57,12 +68,25 @@ abstract class BaseFragment<VM : BaseViewModel, DB : ViewDataBinding> : Fragment
     private var mParent: View? = null
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    private var mUserVisibleController: FragmentUserVisibleController? = null
+
+    init {
+        mUserVisibleController = FragmentUserVisibleController(this, this)
+    }
+
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+
+        ARouter.getInstance().inject(this)
         //绑定databind
         val cls =
-                (javaClass.genericSuperclass as ParameterizedType).actualTypeArguments[1] as Class<*>
+            (javaClass.genericSuperclass as ParameterizedType).actualTypeArguments[1] as Class<*>
         if (ViewDataBinding::class.java != cls && ViewDataBinding::class.java.isAssignableFrom(cls)) {
-            mBinding = DataBindingUtil.inflate(inflater,  getLayoutId(), container, false)
+            mBinding = DataBindingUtil.inflate(inflater, getLayoutId(), container, false)
         }
         //绑定多状态layout
         if (mContentView == null) {
@@ -73,10 +97,27 @@ abstract class BaseFragment<VM : BaseViewModel, DB : ViewDataBinding> : Fragment
                 parent.removeView(mContentView)
             }
         }
+
+
+        initObserve()
+
+
         return mContentView
     }
 
-    open fun createRootView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    private fun initObserve() {
+        EventBus.getDefault().register(this)
+    }
+
+    @Subscribe
+    open fun onGetMessage(t: Message) {
+    }
+
+    open fun createRootView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         if (isNeedLoad()) {
             mLayoutId = getLayoutId()
             if (mLayoutId == 0) {
@@ -103,23 +144,18 @@ abstract class BaseFragment<VM : BaseViewModel, DB : ViewDataBinding> : Fragment
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        onVisible()
         createViewModel()
         lifecycle.addObserver(viewModel)
+
+
         //注册 UI事件
         registorDefUIChange()
-        initViewsAndEvents(mContentView,savedInstanceState)
+        initViewsAndEvents(mContentView, savedInstanceState)
+        initListener()
+        initData()
+
     }
 
-    /**
-     * 是否需要懒加载
-     */
-    private fun onVisible() {
-        if (lifecycle.currentState == Lifecycle.State.STARTED && isFirst) {
-            lazyLoadData()
-            isFirst = false
-        }
-    }
 
     /**
      * 是否和 Activity 共享 ViewModel,默认不共享
@@ -144,20 +180,28 @@ abstract class BaseFragment<VM : BaseViewModel, DB : ViewDataBinding> : Fragment
 
     override fun onResume() {
         super.onResume()
-        onVisible()
+        mUserVisibleController!!.resume()
     }
 
+    override fun onPause() {
+        super.onPause()
+        mUserVisibleController!!.pause()
+    }
 
-    abstract fun initViewsAndEvents(v: View?, savedInstanceState: Bundle?)
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        mUserVisibleController!!.activityCreated()
+    }
 
     abstract fun getLayoutId(): Int
 
+    abstract fun initListener()
+
+    abstract fun initViewsAndEvents(v: View?, savedInstanceState: Bundle?)
+
     abstract fun onRetryBtnClick()
 
-    /**
-     * 懒加载
-     */
-    abstract fun lazyLoadData()
+    abstract fun initData()
 
 
     open fun showLoadingLayout(msg: String?) {
@@ -205,14 +249,17 @@ abstract class BaseFragment<VM : BaseViewModel, DB : ViewDataBinding> : Fragment
     @SuppressLint("ObsoleteSdkInt")
     private fun setStatusColor(color: Int) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            requireActivity().window.statusBarColor = if (color == 0) ColorUtil.getColor(activity!!, R.color.colorPrimaryDark) else color
+            requireActivity().window.statusBarColor =
+                if (color == 0) ColorUtil.getColor(activity!!, R.color.colorPrimaryDark) else color
         }
         if (ColorUtils.calculateLuminance(Color.TRANSPARENT) >= 0.5) {
             // 设置状态栏中字体的颜色为黑色
-            requireActivity().window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            requireActivity().window.decorView.systemUiVisibility =
+                View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         } else {
             // 跟随系统
-            requireActivity().window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            requireActivity().window.decorView.systemUiVisibility =
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
         }
     }
 
@@ -227,11 +274,17 @@ abstract class BaseFragment<VM : BaseViewModel, DB : ViewDataBinding> : Fragment
         viewModel.defUI.showDialog.observe(viewLifecycleOwner, Observer {
             showLoading()
         })
+        viewModel.defUI.showEmpty.observe(viewLifecycleOwner, Observer {
+            showEmptyLayout()
+        })
+        viewModel.defUI.showError.observe(viewLifecycleOwner, Observer {
+            showLoadingErrorLayout(getString(R.string.loading_fail))
+        })
         viewModel.defUI.dismissDialog.observe(viewLifecycleOwner, Observer {
             dismissLoading()
         })
         viewModel.defUI.toastEvent.observe(viewLifecycleOwner, Observer {
-            ToastUtils.showShort(context,it)
+            ToastUtils.showShort(context, it)
         })
         viewModel.defUI.msgEvent.observe(viewLifecycleOwner, Observer {
             handleEvent(it)
@@ -248,11 +301,11 @@ abstract class BaseFragment<VM : BaseViewModel, DB : ViewDataBinding> : Fragment
         if (dialog == null) {
             dialog = context?.let {
                 MaterialDialog(it)
-                        .cancelable(false)
-                        .cornerRadius(8f)
-                        .customView(R.layout.custom_progress_dialog_view, noVerticalPadding = true)
-                        .lifecycleOwner(this)
-                        .maxWidth(R.dimen.dialog_width)
+                    .cancelable(true)
+                    .cornerRadius(8f)
+                    .customView(R.layout.custom_progress_dialog_view, noVerticalPadding = true)
+                    .lifecycleOwner(this)
+                    .maxWidth(R.dimen.dialog_width)
             }
         }
         dialog?.show()
@@ -264,4 +317,108 @@ abstract class BaseFragment<VM : BaseViewModel, DB : ViewDataBinding> : Fragment
     private fun dismissLoading() {
         dialog?.run { if (isShowing) dismiss() }
     }
+
+    fun showToast(msg: String) {
+        Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show()
+    }
+
+    open fun startTo(targetClass: Class<out Activity>) {
+        val intent = Intent(activity, targetClass)
+        startActivity(intent)
+    }
+
+    override fun onDestroy() {
+        EventBus.getDefault().unregister(this)
+        super.onDestroy()
+    }
+
+    /**
+     * 监听界面是否展示给用户，实现懒加载
+     */
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        mUserVisibleController!!.setUserVisibleHint(isVisibleToUser)
+    }
+
+    override fun isWaitingShowToUser(): Boolean {
+        return mUserVisibleController!!.isWaitingShowToUser
+    }
+
+    override fun setWaitingShowToUser(waitingShowToUser: Boolean) {
+        mUserVisibleController!!.isWaitingShowToUser = waitingShowToUser
+    }
+
+    override fun isVisibleToUser(): Boolean {
+        return mUserVisibleController!!.isVisibleToUser
+    }
+
+
+    override fun callSuperSetUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+    }
+
+
+    private var isFirstVisible = true
+
+    private var isFirstInvisible = true
+
+    private var isRealVisible = false
+
+    override fun onVisibleToUserChanged(
+        isVisibleToUser: Boolean,
+        invokeInResumeOrPause: Boolean
+    ) {
+        if (isVisibleToUser) {
+            if (!isRealVisible) {
+                if (isFirstVisible) {
+                    isFirstVisible = false
+                    onUserFirstVisible()
+                } else {
+                    onUserVisible()
+                }
+                isRealVisible = true
+            }
+        } else {
+            if (isRealVisible) {
+                if (isFirstInvisible) {
+                    isFirstInvisible = false
+                    onUserFirstInvisible()
+                } else {
+                    onUserInvisible()
+                }
+                isRealVisible = false
+            }
+        }
+    }
+
+    /**
+     * 用户可见，第一次可见不调用
+     */
+    open fun onUserVisible() {}
+
+    /**
+     * 用户不可见，第一次不可见不调用
+     */
+    open fun onUserInvisible() {}
+
+    /**
+     * 用户第一次可见
+     */
+    open fun onUserFirstVisible() {
+    }
+
+    /**
+     * 用户第一次不可见
+     */
+    open fun onUserFirstInvisible() {}
+
+
+    fun setText(tv: TextView, str: String?) {
+        if (!str.isNullOrEmpty()) {
+            tv.text = str
+        } else {
+            tv.text = "--"
+        }
+    }
+
 }

@@ -20,7 +20,7 @@
             android:id="@+id/btn_2_permission"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dd20"
+            android:layout_marginTop="20dp"
             android:text="动态申请单个权限" />
     </LinearLayout>
 </RelativeLayout>

@@ -24,6 +24,10 @@ class DemoFragment : BaseFragment<HomeViewModel, ViewDataBinding>() {
 
     }
 
-    override fun lazyLoadData() {
+
+    override fun initListener() {
+    }
+
+    override fun initData() {
     }
 }

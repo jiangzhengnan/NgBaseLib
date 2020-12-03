@@ -1,12 +1,7 @@
-package com.ng.ngbaselib.data.migration
+package com.pcl.mvvm.data.db.migration
 
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-
-/**
- *   @auther : Aleyn
- *   time   : 2020/03/17
- */
 object MIGRATION {
     val MIGRATION_1_2 = object : Migration(1, 2) {
         override fun migrate(database: SupportSQLiteDatabase) {

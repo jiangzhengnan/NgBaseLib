@@ -9,8 +9,8 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/load_state_icon"
-        android:layout_width="@dimen/dd24"
-        android:layout_height="@dimen/dd24"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:padding="5dp"
         android:src="@drawable/ic_warn" />
 
@@ -18,9 +18,9 @@
         android:id="@+id/empty_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dd15"
+        android:layout_marginTop="15dp"
         android:padding="5dp"
         android:text="@string/data_empty"
-        android:textSize="@dimen/td04" />
+        android:textSize="12dp" />
 
 </LinearLayout>
