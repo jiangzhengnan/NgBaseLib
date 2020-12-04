@@ -1,5 +1,6 @@
 package com.ng.ngbaselib.show.frag.http.data
 
+import com.ng.ngbaselib.R
 import com.ng.ngbaselib.http.api.SearchService
 import com.ng.ngbaselib.http.bean.SearchResult
 import com.ng.ngbaselib.http.RetrofitClient
@@ -22,6 +23,8 @@ class SearchNetWork {
             netWork ?: SearchNetWork().also { netWork = it }
         }
     }
+
+
 
 
 }

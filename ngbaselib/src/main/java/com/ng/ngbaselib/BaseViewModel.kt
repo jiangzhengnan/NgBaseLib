@@ -10,14 +10,12 @@ import com.ng.ngbaselib.event.Message
 import com.ng.ngbaselib.event.SingleLiveEvent
 import com.ng.ngbaselib.network.IBaseResponse
 import com.ng.ngbaselib.network.ResponseThrowable
-import com.ng.ngbaselib.utils.MLog
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import okhttp3.ResponseBody
+import kotlinx.coroutines.flow.*
 
 open class BaseViewModel(application: Application) : AndroidViewModel(application),
-    LifecycleObserver {
+    LifecycleObserver
+{
     var errorResult = MutableLiveData<String>()
 
     var mNowPage = 1
@@ -39,6 +37,29 @@ open class BaseViewModel(application: Application) : AndroidViewModel(applicatio
     fun <T> launchFlow(block: suspend () -> T): Flow<T> {
         return flow {
             emit(block())
+        }.flowOn(Dispatchers.IO)
+    }
+
+    fun <T> launchFlow(block: suspend () -> T,
+                       success: (T) -> Unit,
+                         errorE: suspend  (cause: Throwable) -> Unit = {
+                             defUI.toastEvent.postValue("${it.message}")
+                             //MLog.d("http_launchGo :${it.code}:${it.errMsg}")
+                             it.printStackTrace()
+                         },  isShowDialog: Boolean = true
+    ) {
+        launchUI {
+            if (isShowDialog) defUI.showDialog.call()
+
+            flow {
+                emit(block())
+            }.catch {
+                defUI.dismissDialog.call()
+                errorE(it)
+            }.flowOn(Dispatchers.IO).collect {
+                defUI.dismissDialog.call()
+                success(it)
+            }
         }
     }
 
@@ -80,7 +101,7 @@ open class BaseViewModel(application: Application) : AndroidViewModel(applicatio
      * @param complete  完成回调（无论成功失败都会调用）
      * @param isShowDialog 是否显示加载框
      */
-    fun <T> launchOnlyresult(
+    fun <T> launchOnlyResult(
         block: suspend CoroutineScope.() -> IBaseResponse<T>,
         success: (T?) -> Unit,
         error: (ResponseThrowable) -> Unit = {

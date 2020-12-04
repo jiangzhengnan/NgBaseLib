@@ -106,7 +106,11 @@ abstract class BaseFragment<VM : BaseViewModel, DB : ViewDataBinding> : Fragment
     }
 
     private fun initObserve() {
-        EventBus.getDefault().register(this)
+        EventBus.getDefault().let {
+            if (!it.isRegistered(this)){
+                it.register(this)
+            }
+        }
     }
 
     @Subscribe

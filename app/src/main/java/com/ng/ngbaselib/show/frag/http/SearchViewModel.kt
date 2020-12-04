@@ -42,6 +42,23 @@ class SearchViewModel : BaseViewModel(MyApplication.instance) {
     }
 
 
+    fun getSearchResultWithFlow(key: String): MutableLiveData<SearchResult> {
+        MLog.d("getSearchResult Flow: $key")
+        launchFlow({
+            searchRepository.getSearchResult(key)
+        }, {
+            MLog.d("getSearchResponse: $it")
+            searchResult.value = it
+        },
+            {
+                MLog.d("getSearchResponse error: " + it.message)
+                errorResult.value = it.message
+            }
+        )
+        return searchResult
+    }
+
+
     //历史记录
     var historyResult = MutableLiveData<List<SearchItem>>()
 
