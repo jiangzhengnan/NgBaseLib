@@ -12,10 +12,10 @@ abstract class BaseModel {
      * @param isUseCache 是否使用缓存
      */
     suspend fun <T> cacheNetCall(
-            remoto: suspend () -> IBaseResponse<T>,
-            local: suspend () -> T?,
-            save: suspend (T) -> Unit,
-            isUseCache: (T?) -> Boolean = { true }
+        remoto: suspend () -> IBaseResponse<T>,
+        local: suspend () -> T?,
+        save: suspend (T) -> Unit,
+        isUseCache: (T?) -> Boolean = { true }
     ): T {
         val localData = local.invoke()
         if (isUseCache(localData)) return localData!!

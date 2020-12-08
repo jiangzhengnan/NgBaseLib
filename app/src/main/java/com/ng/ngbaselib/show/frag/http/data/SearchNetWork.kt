@@ -5,6 +5,7 @@ import com.ng.ngbaselib.http.api.SearchService
 import com.ng.ngbaselib.http.bean.SearchResult
 import com.ng.ngbaselib.http.RetrofitClient
 import com.ng.ngbaselib.network.BaseResult
+import com.ng.ngbaselib.utils.MLog
 import okhttp3.ResponseBody
 
 class SearchNetWork {
@@ -12,8 +13,11 @@ class SearchNetWork {
     private val mService by lazy { RetrofitClient.getInstance().create(SearchService::class.java) }
 
 
-    suspend fun getSearchResult(key: String): SearchResult =
-        mService.getSearchResult(key,1)
+    suspend fun getSearchResult(key: String): SearchResult {
+
+
+       return mService.getSearchResult(key, 1)
+    }
 
     companion object {
         @Volatile
@@ -23,8 +27,6 @@ class SearchNetWork {
             netWork ?: SearchNetWork().also { netWork = it }
         }
     }
-
-
 
 
 }

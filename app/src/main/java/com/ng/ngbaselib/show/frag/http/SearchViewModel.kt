@@ -32,35 +32,6 @@ class SearchViewModel : BaseViewModel(MyApplication.instance) {
     var searchResult = MutableLiveData<SearchResult>()
 
 
-    //测试flow请求多个结果
-    fun getSearchResultTestFlow(key: String) {
-        launchUI {
-            flow {
-                //1
-                emit(searchRepository.getSearchResult(key))
-                delay(3000)
-                //2
-                emit(searchRepository.getSearchResult(key + key))
-                delay(3000)
-                //3
-                emit(searchRepository.getSearchResult(key + key + key))
-                delay(3000)
-            }.flowOn(Dispatchers.IO)
-                .onStart {
-                    //显示加载框
-                    defUI.showDialog.call()
-                }.onCompletion {
-                    defUI.dismissDialog.call()
-                }.catch {
-                    defUI.showError.call()
-                }.collectLatest {
-                    defUI.dismissDialog.call()
-                    searchResult.value = it
-                }
-        }
-    }
-
-
     fun getSearchResult(key: String): MutableLiveData<SearchResult> {
         MLog.d("getSearchResult: $key")
         launchOnlyResultForBody({
@@ -90,6 +61,34 @@ class SearchViewModel : BaseViewModel(MyApplication.instance) {
             }
         )
         return searchResult
+    }
+
+    //测试flow请求多个结果
+    fun getSearchResultTestFlow(key: String) {
+        launchUI {
+            flow {
+                //1
+                emit(searchRepository.getSearchResult(key))
+                delay(3000)
+                //2
+                emit(searchRepository.getSearchResult(key + key))
+                delay(3000)
+                //3
+                emit(searchRepository.getSearchResult(key + key + key))
+                delay(3000)
+            }.flowOn(Dispatchers.IO)
+                .onStart {
+                    //显示加载框
+                    defUI.showDialog.call()
+                }.onCompletion {
+                    defUI.dismissDialog.call()
+                }.catch {
+                    defUI.showError.call()
+                }.collectLatest {
+                    defUI.dismissDialog.call()
+                    searchResult.value = it
+                }
+        }
     }
 
 

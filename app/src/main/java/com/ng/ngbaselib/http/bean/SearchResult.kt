@@ -2,6 +2,7 @@ package com.ng.ngbaselib.http.bean
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.ng.ngbaselib.network.IBaseResponse
 import java.util.*
 
 

@@ -12,9 +12,14 @@ class SearchRepository private constructor(
     private val localData: SearchDao
 ) : BaseModel() {
 
-
     suspend fun getSearchHistory(): List<SearchItem>? {
         return localData.getSearchHistory()
+    }
+
+    suspend fun getSearchHistoryF(): SearchResult {
+        var localResult = SearchResult()
+        localResult.items = localData.getSearchHistory()
+        return localResult
     }
 
     suspend fun addSearchHistory(searchResult: SearchItem) {
@@ -27,14 +32,15 @@ class SearchRepository private constructor(
 
     suspend fun getSearchResult(key: String): SearchResult = netWork.getSearchResult(key)
 
+
     companion object {
 
         @Volatile
         private var INSTANCE: SearchRepository? = null
 
         fun getInstance(netWork: SearchNetWork, searchDao: SearchDao) =
-                INSTANCE ?: synchronized(this) {
-                    INSTANCE ?: SearchRepository(netWork, searchDao).also { INSTANCE = it }
-                }
+            INSTANCE ?: synchronized(this) {
+                INSTANCE ?: SearchRepository(netWork, searchDao).also { INSTANCE = it }
+            }
     }
 }
