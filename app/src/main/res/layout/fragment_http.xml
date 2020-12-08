@@ -39,11 +39,12 @@
                 android:text="flow" />
         </LinearLayout>
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_result_http"
+        <LinearLayout
+            android:id="@+id/ll_tv_result_http"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp" />
+            android:layout_marginTop="5dp"
+            android:orientation="vertical" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_result_http"

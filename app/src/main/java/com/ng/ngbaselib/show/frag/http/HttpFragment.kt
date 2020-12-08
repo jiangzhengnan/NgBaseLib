@@ -4,13 +4,18 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.Gravity
 import android.view.View
+import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.core.widget.TextViewCompat
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.Observer
 import com.ng.ngbaselib.BaseFragment
 import com.ng.ngbaselib.R
 import com.ng.ngbaselib.expand.UIExpand.click
 import com.ng.ngbaselib.expand.UIExpand.screenWidth
+import com.ng.ngbaselib.http.bean.SearchResult
 import com.ng.ngbaselib.show.MainActivity
 import com.ng.ngbaselib.utils.MLog
 import kotlinx.android.synthetic.main.fragment_http.*
@@ -27,8 +32,7 @@ class HttpFragment : BaseFragment<SearchViewModel, ViewDataBinding>() {
     override fun onRetryBtnClick() {
     }
 
-    private var mSearchWord : String = ""
-
+    private var mSearchWord: String = ""
 
 
     override fun initViewsAndEvents(v: View?, savedInstanceState: Bundle?) {
@@ -47,7 +51,7 @@ class HttpFragment : BaseFragment<SearchViewModel, ViewDataBinding>() {
     private fun requestWithFlow() {
         showToast("Flow 请求 ")
         mSearchWord = et_search.text.toString()
-        viewModel.getSearchResultWithFlow(mSearchWord)
+        viewModel.getSearchResultTestFlow(mSearchWord)
     }
 
     private fun requestWithGet() {
@@ -63,9 +67,22 @@ class HttpFragment : BaseFragment<SearchViewModel, ViewDataBinding>() {
     override fun initData() {
         viewModel.searchResult.observe(this, Observer {
             MLog.d("搜索结果:${it}")
-            tv_result_http.text = it.toString()
-
+            //tv_result_http.text = it.toString()
+            addResultView(it)
         })
+    }
+
+    private fun addResultView(it: SearchResult?) {
+        val tvTempView = TextView(context)
+        tvTempView.isSingleLine = true
+        tvTempView.text = it.toString()
+        val lp = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+        tvTempView.gravity = Gravity.CENTER
+        lp.setMargins(5,5,5,5)
+        ll_tv_result_http.addView(tvTempView, lp)
     }
 
 

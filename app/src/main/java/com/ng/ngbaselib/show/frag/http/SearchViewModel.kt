@@ -9,6 +9,10 @@ import com.ng.ngbaselib.show.frag.http.data.SearchRepository
 import com.ng.ngbaselib.utils.MLog
 import com.ng.ngbaselib.data.MyDatabase
 import com.ng.ngbaselib.http.bean.SearchItem
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.withTimeoutOrNull
 
 /**
  * 描述:
@@ -26,6 +30,36 @@ class SearchViewModel : BaseViewModel(MyApplication.instance) {
 
     //得到搜索结果
     var searchResult = MutableLiveData<SearchResult>()
+
+
+    //测试flow请求多个结果
+    fun getSearchResultTestFlow(key: String) {
+        launchUI {
+            flow {
+                //1
+                emit(searchRepository.getSearchResult(key))
+                delay(3000)
+                //2
+                emit(searchRepository.getSearchResult(key + key))
+                delay(3000)
+                //3
+                emit(searchRepository.getSearchResult(key + key + key))
+                delay(3000)
+            }.flowOn(Dispatchers.IO)
+                .onStart {
+                    //显示加载框
+                    defUI.showDialog.call()
+                }.onCompletion {
+                    defUI.dismissDialog.call()
+                }.catch {
+                    defUI.showError.call()
+                }.collectLatest {
+                    defUI.dismissDialog.call()
+                    searchResult.value = it
+                }
+        }
+    }
+
 
     fun getSearchResult(key: String): MutableLiveData<SearchResult> {
         MLog.d("getSearchResult: $key")

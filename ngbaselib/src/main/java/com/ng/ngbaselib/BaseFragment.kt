@@ -28,6 +28,9 @@ import com.ng.ngbaselib.fragment.FragmentUserVisibleController
 import com.ng.ngbaselib.utils.ColorUtil
 import com.ng.ngbaselib.utils.ToastUtils
 import com.ng.ngbaselib.view.StateLayout
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import java.lang.reflect.ParameterizedType
@@ -45,7 +48,7 @@ import java.lang.reflect.ParameterizedType
  * @date 2020-06-12
  */
 abstract class BaseFragment<VM : BaseViewModel, DB : ViewDataBinding> : Fragment(),
-    FragmentUserVisibleController.UserVisibleCallback {
+    FragmentUserVisibleController.UserVisibleCallback{
     var mTitle: String? = null
 
     //是否需要Loading布局

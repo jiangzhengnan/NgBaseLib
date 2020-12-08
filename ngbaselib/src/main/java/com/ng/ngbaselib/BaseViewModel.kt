@@ -1,10 +1,7 @@
 package com.ng.ngbaselib
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.ng.ngbaselib.network.ExceptionHandle
 import com.ng.ngbaselib.event.Message
 import com.ng.ngbaselib.event.SingleLiveEvent
@@ -14,8 +11,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 
 open class BaseViewModel(application: Application) : AndroidViewModel(application),
-    LifecycleObserver
-{
+    LifecycleObserver {
     var errorResult = MutableLiveData<String>()
 
     var mNowPage = 1
@@ -29,6 +25,7 @@ open class BaseViewModel(application: Application) : AndroidViewModel(applicatio
      */
     fun launchUI(block: suspend CoroutineScope.() -> Unit) = viewModelScope.launch {
         block()
+
     }
 
     /**
@@ -40,23 +37,27 @@ open class BaseViewModel(application: Application) : AndroidViewModel(applicatio
         }.flowOn(Dispatchers.IO)
     }
 
-    fun <T> launchFlow(block: suspend () -> T,
-                       success: (T) -> Unit,
-                         errorE: suspend  (cause: Throwable) -> Unit = {
-                             defUI.toastEvent.postValue("${it.message}")
-                             //MLog.d("http_launchGo :${it.code}:${it.errMsg}")
-                             it.printStackTrace()
-                         },  isShowDialog: Boolean = true
+    fun <T> launchFlow(
+        block: suspend () -> T,
+        success: (T) -> Unit,
+        errorE: suspend (cause: Throwable) -> Unit = {
+            defUI.toastEvent.postValue("${it.message}")
+            //MLog.d("http_launchGo :${it.code}:${it.errMsg}")
+            it.printStackTrace()
+        }, isShowDialog: Boolean = true
     ) {
         launchUI {
-            if (isShowDialog) defUI.showDialog.call()
-
             flow {
                 emit(block())
+            }.flowOn(Dispatchers.IO).onStart {
+                //显示加载框
+                if (isShowDialog) defUI.showDialog.call()
+            }.onCompletion {
+                if (isShowDialog) defUI.dismissDialog.call()
             }.catch {
                 defUI.dismissDialog.call()
                 errorE(it)
-            }.flowOn(Dispatchers.IO).collect {
+            }.collectLatest {
                 defUI.dismissDialog.call()
                 success(it)
             }
@@ -199,7 +200,7 @@ open class BaseViewModel(application: Application) : AndroidViewModel(applicatio
     /**
      * 异常统一处理
      */
-    private suspend fun <T>  handleExceptionForResponseBody(
+    private suspend fun <T> handleExceptionForResponseBody(
         block: suspend CoroutineScope.() -> T,
         success: suspend CoroutineScope.(T) -> Unit,
         error: suspend CoroutineScope.(ResponseThrowable) -> Unit,
@@ -215,7 +216,6 @@ open class BaseViewModel(application: Application) : AndroidViewModel(applicatio
             }
         }
     }
-
 
 
     /**
