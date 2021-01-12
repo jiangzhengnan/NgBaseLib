@@ -3,9 +3,10 @@ package com.ng.ngbaselib.show.frag
 import android.Manifest
 import android.content.DialogInterface
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.Observer
+import androidx.viewbinding.ViewBinding
 import com.ng.ngbaselib.BaseFragment
 import com.ng.ngbaselib.R
 import com.ng.ngbaselib.permission.PermissionResult
@@ -13,14 +14,16 @@ import com.ng.ngbaselib.permission.PermissionUtil
 import com.ng.ngbaselib.permission.Permissions
 import com.ng.ngbaselib.show.viewmodel.HomeViewModel
 import com.ng.ngbaselib.utils.MLog
-import kotlinx.android.synthetic.main.fragment_permission.*
 
 /**
  * 描述:  权限申请部分
  * @author Jzn
  * @date 2020/6/19
  */
-class PermissionFrag : BaseFragment<HomeViewModel, ViewDataBinding>() {
+class PermissionFrag : BaseFragment<HomeViewModel, ViewBinding>() {
+    override fun createViewBinding(inflater: LayoutInflater): ViewBinding? = null
+
+    override fun createViewModel(): HomeViewModel? = null
 
     //需要申请的权限列表
     private val mPermissions = arrayOf(
@@ -112,12 +115,12 @@ class PermissionFrag : BaseFragment<HomeViewModel, ViewDataBinding>() {
     }
 
     override fun initViewsAndEvents(v: View?, savedInstanceState: Bundle?) {
-        btn_1_permission.setOnClickListener {
-            getPermissions(mPermissions)
-        }
-        btn_2_permission.setOnClickListener {
-            getPermission()
-        }
+//        btn_1_permission.setOnClickListener {
+//            getPermissions(mPermissions)
+//        }
+//        btn_2_permission.setOnClickListener {
+//            getPermission()
+//        }
     }
 
     override fun initListener() {

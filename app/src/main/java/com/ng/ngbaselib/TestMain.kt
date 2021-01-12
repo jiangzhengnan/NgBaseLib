@@ -1,10 +1,15 @@
 package com.ng.ngbaselib
 
+import android.view.View
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
+import kotlin.properties.Delegates
+import kotlin.properties.ReadOnlyProperty
+import kotlin.reflect.KProperty
+import kotlin.reflect.KProperty0
 
 /**
  * 描述:
@@ -12,27 +17,20 @@ import kotlinx.coroutines.runBlocking
  * @date 2020/12/2
  */
 fun main(args: Array<String>) {
+    //run(view, ui) // 最终调用
+}
 
+//饿汉式
+object User{
 
-    runBlocking {
-        productor().collect {
-            delay(1000)
-            println("custom " + it +" " + System.currentTimeMillis())
+}
+
+//懒汉式
+class User2  {
+    companion object{
+        val Instance:User2 by lazy {
+            User2()
         }
     }
-    print("result")
 
 }
-
-
-  fun productor() = channelFlow<Int> {
-    for (  i in 0..10) {
-        delay(2000)
-        println("produc $i" +" " + System.currentTimeMillis())
-        send(i)
-     }
-
-}
-
-
-

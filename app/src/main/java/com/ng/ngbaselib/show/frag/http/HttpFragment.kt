@@ -5,27 +5,36 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.widget.TextViewCompat
-import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.ng.ngbaselib.BaseFragment
 import com.ng.ngbaselib.R
+import com.ng.ngbaselib.ViewModelFactory
+import com.ng.ngbaselib.databinding.FragmentHttpBinding
 import com.ng.ngbaselib.expand.UIExpand.click
-import com.ng.ngbaselib.expand.UIExpand.screenWidth
 import com.ng.ngbaselib.http.bean.SearchResult
-import com.ng.ngbaselib.show.MainActivity
 import com.ng.ngbaselib.utils.MLog
-import kotlinx.android.synthetic.main.fragment_http.*
 
 /**
  * 描述:
  * @author Jzn
  * @date 2020/6/20
  */
-class HttpFragment : BaseFragment<SearchViewModel, ViewDataBinding>() {
+class HttpFragment : BaseFragment<SearchViewModel, FragmentHttpBinding>() {
+
+    override fun createViewBinding(inflater: LayoutInflater): FragmentHttpBinding? =
+        FragmentHttpBinding.inflate(inflater)
+
+    override fun createViewModel(): SearchViewModel {
+        return ViewModelProvider(
+            this,
+            ViewModelFactory()
+        ).get(SearchViewModel::class.java)
+    }
 
     override fun getLayoutId(): Int = R.layout.fragment_http
 
@@ -37,11 +46,11 @@ class HttpFragment : BaseFragment<SearchViewModel, ViewDataBinding>() {
 
     override fun initViewsAndEvents(v: View?, savedInstanceState: Bundle?) {
 
-        btn_get_http.click {
+        mBinding!!.btnGetHttp.click {
             //get 请求
             requestWithGet()
         }
-        btn_flow_http.click {
+        mBinding!!.btnFlowHttp.click {
             //流 请求
             requestWithFlow()
         }
@@ -50,14 +59,14 @@ class HttpFragment : BaseFragment<SearchViewModel, ViewDataBinding>() {
 
     private fun requestWithFlow() {
         showToast("Flow 请求 ")
-        mSearchWord = et_search.text.toString()
-        viewModel.getSearchResultTestFlow(mSearchWord)
+        mSearchWord = mBinding!!.etSearch.text.toString()
+        mViewModel!!.getSearchResultTestFlow(mSearchWord)
     }
 
     private fun requestWithGet() {
         showToast("Get 请求 ")
-        mSearchWord = et_search.text.toString()
-        viewModel.getSearchResult(mSearchWord)
+        mSearchWord = mBinding!!.etSearch.text.toString()
+        mViewModel!!.getSearchResult(mSearchWord)
 
     }
 
@@ -65,7 +74,7 @@ class HttpFragment : BaseFragment<SearchViewModel, ViewDataBinding>() {
     }
 
     override fun initData() {
-        viewModel.searchResult.observe(this, Observer {
+        mViewModel!!.searchResult.observe(this, Observer {
             MLog.d("搜索结果:${it}")
             //tv_result_http.text = it.toString()
             addResultView(it)
@@ -81,19 +90,10 @@ class HttpFragment : BaseFragment<SearchViewModel, ViewDataBinding>() {
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
         tvTempView.gravity = Gravity.CENTER
-        lp.setMargins(5,5,5,5)
-        ll_tv_result_http.addView(tvTempView, lp)
+        lp.setMargins(5, 5, 5, 5)
+        mBinding!!.llTvResultHttp.addView(tvTempView, lp)
     }
 
 
-    //Context的扩展
-    //使用内联函数的泛型参数 reified 特性来实现
-    inline fun <reified T : Activity> Context.startActivity() {
-        val intent = Intent(this, T::class.java)
-        if (this !is Activity) {
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        }
-        startActivity(intent)
-    }
 }
 

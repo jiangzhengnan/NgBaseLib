@@ -1,6 +1,10 @@
 package com.ng.ngbaselib.show.frag.http
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.map
+import androidx.lifecycle.switchMap
+import com.bumptech.glide.load.engine.Resource
 import com.ng.ngbaselib.BaseViewModel
 import com.ng.ngbaselib.MyApplication
 import com.ng.ngbaselib.http.bean.SearchResult
@@ -30,7 +34,6 @@ class SearchViewModel : BaseViewModel(MyApplication.instance) {
 
     //得到搜索结果
     var searchResult = MutableLiveData<SearchResult>()
-
 
     fun getSearchResult(key: String): MutableLiveData<SearchResult> {
         MLog.d("getSearchResult: $key")

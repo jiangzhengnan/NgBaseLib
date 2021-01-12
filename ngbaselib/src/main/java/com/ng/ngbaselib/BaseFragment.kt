@@ -13,12 +13,10 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.graphics.ColorUtils
-import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.viewbinding.ViewBinding
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
@@ -28,12 +26,10 @@ import com.ng.ngbaselib.fragment.FragmentUserVisibleController
 import com.ng.ngbaselib.utils.ColorUtil
 import com.ng.ngbaselib.utils.ToastUtils
 import com.ng.ngbaselib.view.StateLayout
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import java.lang.reflect.ParameterizedType
+
 
 /**
  * base:
@@ -47,8 +43,9 @@ import java.lang.reflect.ParameterizedType
  * @author Jzn
  * @date 2020-06-12
  */
-abstract class BaseFragment<VM : BaseViewModel, DB : ViewDataBinding> : Fragment(),
-    FragmentUserVisibleController.UserVisibleCallback{
+@Suppress("UNCHECKED_CAST")
+abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(),
+    FragmentUserVisibleController.UserVisibleCallback {
     var mTitle: String? = null
 
     //是否需要Loading布局
@@ -56,8 +53,8 @@ abstract class BaseFragment<VM : BaseViewModel, DB : ViewDataBinding> : Fragment
         return true
     }
 
-    protected lateinit var viewModel: VM
-    protected var mBinding: DB? = null
+    protected var mViewModel: VM? = null
+    protected var mBinding: VB? = null
 
     //是否第一次加载
     private var isFirst: Boolean = true
@@ -67,8 +64,17 @@ abstract class BaseFragment<VM : BaseViewModel, DB : ViewDataBinding> : Fragment
     private var mLayoutId = 0
     private var mStateLayout: StateLayout? = null
     private var mContentFrameLayout: FrameLayout? = null
+
+
+    private var mCustomView: View? = null
+
     private var mContentView: View? = null
+
     private var mParent: View? = null
+
+
+    protected abstract fun createViewBinding(inflater: LayoutInflater): VB?
+    protected abstract fun createViewModel(): VM?
 
 
     private var mUserVisibleController: FragmentUserVisibleController? = null
@@ -85,12 +91,6 @@ abstract class BaseFragment<VM : BaseViewModel, DB : ViewDataBinding> : Fragment
     ): View? {
 
         ARouter.getInstance().inject(this)
-        //绑定databind
-        val cls =
-            (javaClass.genericSuperclass as ParameterizedType).actualTypeArguments[1] as Class<*>
-        if (ViewDataBinding::class.java != cls && ViewDataBinding::class.java.isAssignableFrom(cls)) {
-            mBinding = DataBindingUtil.inflate(inflater, getLayoutId(), container, false)
-        }
         //绑定多状态layout
         if (mContentView == null) {
             mContentView = createRootView(inflater, container, savedInstanceState)
@@ -108,9 +108,37 @@ abstract class BaseFragment<VM : BaseViewModel, DB : ViewDataBinding> : Fragment
         return mContentView
     }
 
+    open fun createRootView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        if (createViewBinding(inflater) != null) {
+            mBinding = createViewBinding(inflater)!!
+            mCustomView = mBinding!!.root
+        } else {
+            mLayoutId = getLayoutId()
+            if (mLayoutId == 0) {
+                throw NullPointerException("布局为空")
+            }
+            mCustomView = inflater.inflate(getLayoutId(), container, false)
+        }
+        if (isNeedLoad()) {
+            setRoot(inflater.inflate(R.layout.fragment_basic, container, false))
+            mStateLayout = findViewById<View>(R.id.loading_layout) as StateLayout
+            mContentFrameLayout = findViewById<View>(R.id.content_layout) as FrameLayout
+            mContentFrameLayout!!.addView(mCustomView)
+        } else {
+            mLayoutId = getLayoutId()
+            setRoot(mCustomView!!)
+        }
+        return getRoot()
+    }
+
+
     private fun initObserve() {
         EventBus.getDefault().let {
-            if (!it.isRegistered(this)){
+            if (!it.isRegistered(this)) {
                 it.register(this)
             }
         }
@@ -120,26 +148,6 @@ abstract class BaseFragment<VM : BaseViewModel, DB : ViewDataBinding> : Fragment
     open fun onGetMessage(t: Message) {
     }
 
-    open fun createRootView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        if (isNeedLoad()) {
-            mLayoutId = getLayoutId()
-            if (mLayoutId == 0) {
-                throw NullPointerException("布局为空")
-            }
-            setRoot(inflater.inflate(R.layout.fragment_basic, container, false))
-            mStateLayout = findViewById<View>(R.id.loading_layout) as StateLayout
-            mContentFrameLayout = findViewById<View>(R.id.content_layout) as FrameLayout
-            inflater.inflate(mLayoutId, mContentFrameLayout, true) // 加载fragment布局
-        } else {
-            mLayoutId = getLayoutId()
-            setRoot(inflater.inflate(mLayoutId, container, false))
-        }
-        return getRoot()
-    }
 
     protected open fun getRoot(): View? {
         return this.mParent
@@ -151,10 +159,10 @@ abstract class BaseFragment<VM : BaseViewModel, DB : ViewDataBinding> : Fragment
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        createViewModel()
-        lifecycle.addObserver(viewModel)
 
-
+        mViewModel = createViewModel()
+        if (mViewModel != null)
+            lifecycle.addObserver(mViewModel!!)
         //注册 UI事件
         registorDefUIChange()
         initViewsAndEvents(mContentView, savedInstanceState)
@@ -170,20 +178,6 @@ abstract class BaseFragment<VM : BaseViewModel, DB : ViewDataBinding> : Fragment
      */
     open fun isShareVM(): Boolean = false
 
-
-    /**
-     * 反射 创建 ViewModel
-     */
-    @Suppress("UNCHECKED_CAST")
-    private fun createViewModel() {
-        val type = javaClass.genericSuperclass
-        if (type is ParameterizedType) {
-            val tp = type.actualTypeArguments[0]
-            val tClass = tp as? Class<VM> ?: BaseViewModel::class.java
-            val viewModelStore = if (isShareVM()) activity!!.viewModelStore else this.viewModelStore
-            viewModel = ViewModelProvider(viewModelStore, ViewModelFactory()).get(tClass) as VM
-        }
-    }
 
     override fun onResume() {
         super.onResume()
@@ -278,24 +272,26 @@ abstract class BaseFragment<VM : BaseViewModel, DB : ViewDataBinding> : Fragment
      * 注册 UI 事件
      */
     private fun registorDefUIChange() {
-        viewModel.defUI.showDialog.observe(viewLifecycleOwner, Observer {
-            showLoading()
-        })
-        viewModel.defUI.showEmpty.observe(viewLifecycleOwner, Observer {
-            showEmptyLayout()
-        })
-        viewModel.defUI.showError.observe(viewLifecycleOwner, Observer {
-            showLoadingErrorLayout(getString(R.string.loading_fail))
-        })
-        viewModel.defUI.dismissDialog.observe(viewLifecycleOwner, Observer {
-            dismissLoading()
-        })
-        viewModel.defUI.toastEvent.observe(viewLifecycleOwner, Observer {
-            ToastUtils.showShort(context, it)
-        })
-        viewModel.defUI.msgEvent.observe(viewLifecycleOwner, Observer {
-            handleEvent(it)
-        })
+        if (mViewModel!=null) {
+            mViewModel!!.defUI.showDialog.observe(viewLifecycleOwner, Observer {
+                showLoading()
+            })
+            mViewModel!!.defUI.showEmpty.observe(viewLifecycleOwner, Observer {
+                showEmptyLayout()
+            })
+            mViewModel!!.defUI.showError.observe(viewLifecycleOwner, Observer {
+                showLoadingErrorLayout(getString(R.string.loading_fail))
+            })
+            mViewModel!!.defUI.dismissDialog.observe(viewLifecycleOwner, Observer {
+                dismissLoading()
+            })
+            mViewModel!!.defUI.toastEvent.observe(viewLifecycleOwner, Observer {
+                ToastUtils.showShort(context, it)
+            })
+            mViewModel!!.defUI.msgEvent.observe(viewLifecycleOwner, Observer {
+                handleEvent(it)
+            })
+        }
     }
 
     open fun handleEvent(msg: Message) {}

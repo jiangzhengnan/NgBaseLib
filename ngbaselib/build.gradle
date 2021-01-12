@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 //使用生成文件
@@ -31,8 +30,8 @@ android {
             }
         }
     }
-    dataBinding {
-        enabled true
+    buildFeatures {
+        viewBinding = true
     }
     buildTypes {
         release {
@@ -47,6 +46,7 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
 }
 
 dependencies {
