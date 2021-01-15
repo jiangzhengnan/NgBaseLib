@@ -1,7 +1,9 @@
 package com.ng.ngbaselib
 
 import android.app.Application
+import android.content.Intent
 import com.alibaba.android.arouter.launcher.ARouter
+import com.ng.ngbaselib.record.RecordService
 
 /**
  * 功能模块:
@@ -43,5 +45,9 @@ open class MyApplication : Application() {
         }
         ARouter.init(this); // 尽可能早，推荐在Application中初始化
 
+
+        // 启动 Marvel service
+        // 启动 Marvel service
+        //startService(Intent(this, RecordService::class.java))
     }
 }
