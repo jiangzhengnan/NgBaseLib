@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.ng.ngbaselib.BaseFragment
 import com.ng.ngbaselib.R
+import com.ng.ngbaselib.SafeObserver
 import com.ng.ngbaselib.ViewModelFactory
 import com.ng.ngbaselib.databinding.FragmentHttpBinding
 import com.ng.ngbaselib.expand.UIExpand.click
@@ -74,10 +75,13 @@ class HttpFragment : BaseFragment<SearchViewModel, FragmentHttpBinding>() {
     }
 
     override fun initData() {
-        mViewModel!!.searchResult.observe(this, Observer {
-            MLog.d("搜索结果:${it}")
-            //tv_result_http.text = it.toString()
-            addResultView(it)
+        mViewModel!!.searchResult.observe(this,object: SafeObserver<SearchResult>() {
+            override fun onSoftChanged(it: SearchResult?) {
+                MLog.d("搜索结果:${it}")
+                //tv_result_http.text = it.toString()
+                addResultView(it)
+            }
+
         })
     }
 

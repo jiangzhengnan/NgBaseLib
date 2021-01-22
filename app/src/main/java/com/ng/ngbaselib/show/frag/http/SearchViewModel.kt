@@ -36,14 +36,11 @@ class SearchViewModel : BaseViewModel(MyApplication.instance) {
     var searchResult = MutableLiveData<SearchResult>()
 
     fun getSearchResult(key: String): MutableLiveData<SearchResult> {
-        MLog.d("getSearchResult: $key")
         launchOnlyResultForBody({
             searchRepository.getSearchResult(key)
         }, {
-            MLog.d("getSearchResponse: $it")
             searchResult.value = it
         }, {
-            MLog.d("getSearchResponse error: " + it.errMsg + " " + it.code)
             errorResult.value = it.errMsg + " " + it.code
         }, isShowDialog = true)
         return searchResult
