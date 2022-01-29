@@ -1,4 +1,7 @@
 # NgBaseLib
+![Kotlin](https://img.shields.io/badge/language-Kotlin-blue.svg)
+![visitors](https://visitor-badge.laobi.icu/badge?page_id=jiangzhengnan.ngbaselib.read.me)
+</br>
 基于kotlin与最新框架的基础开发库<br/>
 功能模块<br/>
 0.权限判断<br/>
